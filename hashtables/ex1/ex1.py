@@ -14,12 +14,12 @@ def get_indices_of_item_weights(weights, length, limit):
         for i in range(len(weights)):
             hash_table_insert(ht, weights[i], i)
 
-        for weight in weights:
-            if weight <= limit:
-                answer = limit - weight
+        for i in range(len(weights)):
+            if weights[i] <= limit:
                 
-                if hash_table_retrieve(ht, answer):
-                    answer_tuple = (hash_table_retrieve(ht, weight), hash_table_retrieve(ht, answer))
+                if hash_table_retrieve(ht, limit - weights[i]):
+                    
+                    answer_tuple = (hash_table_retrieve(ht, weights[i]), hash_table_retrieve(ht, limit - weights[i]))
                     if answer_tuple[0] < answer_tuple[1]:
                         new_tuple = (answer_tuple[1], answer_tuple[0])
                         return new_tuple

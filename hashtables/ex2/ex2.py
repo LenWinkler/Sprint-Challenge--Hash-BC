@@ -16,8 +16,19 @@ def reconstruct_trip(tickets, length):
     hashtable = HashTable(length)
     route = [None] * length
 
-    """
-    YOUR CODE HERE
-    """
+    # create current ticket var
+    # loop through tickets
+    # look for the ticket whose source is None
+    # add that ticket to hashtable storage and also set that ticket as current ticket
+    # while current.destination is not None
+    # loop through again
+    # look for ticket whose source is current ticket's destination
+    # add that ticket to hashtable storage and set that ticket as current ticket
 
-    pass
+    # when that's done
+    # create current var
+    # loop through hashtable.storage
+    # while current destination is not None
+    # route.append(current.destination)
+
+    # return route
