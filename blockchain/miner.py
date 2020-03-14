@@ -1,5 +1,6 @@
 import hashlib
 import requests
+import time
 
 import sys
 
@@ -8,7 +9,6 @@ from uuid import uuid4
 from timeit import default_timer as timer
 
 import random
-
 
 def proof_of_work(last_proof):
     """
@@ -24,7 +24,9 @@ def proof_of_work(last_proof):
 
     print("Searching for next proof")
     proof = 0
-    #  TODO: Your code here
+
+    while valid_proof(last_proof, proof) is False:
+        proof += 1
 
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
@@ -39,9 +41,13 @@ def valid_proof(last_hash, proof):
     IE:  last_hash: ...AE9123456, new hash 123456E88...
     """
 
-    # TODO: Your code here!
-    pass
+    last_hash_string = f'{last_hash}'.encode()
+    proof_string = f'{proof}'.encode()
 
+    hashed_last = hashlib.sha256(last_hash_string).hexdigest()
+    hashed_proof = hashlib.sha256(proof_string).hexdigest()
+
+    return hashed_last[-6:] == hashed_proof[:6]
 
 if __name__ == '__main__':
     # What node are we interacting with?
@@ -58,6 +64,10 @@ if __name__ == '__main__':
     print("ID is", id)
     f.close()
 
+    # fail counter and seconds for timer
+    fail_counter = 0
+    pause_time = 10
+
     if id == 'NONAME\n':
         print("ERROR: You must change your name in `my_id.txt`!")
         exit()
@@ -73,8 +83,19 @@ if __name__ == '__main__':
 
         r = requests.post(url=node + "/mine", json=post_data)
         data = r.json()
+
+        # check counter and pause miner if fail_counter is == 3
+        if fail_counter >= 3:
+            fail_counter = 0
+            time.sleep(pause_time)
+            if pause_time >= 60:
+                pause_time = 0
+            else:
+                pause_time += 5
+
         if data.get('message') == 'New Block Forged':
             coins_mined += 1
             print("Total coins mined: " + str(coins_mined))
         else:
+            fail_counter += 1
             print(data.get('message'))
