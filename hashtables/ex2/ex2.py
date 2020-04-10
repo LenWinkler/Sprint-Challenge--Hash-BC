@@ -37,5 +37,5 @@ def reconstruct_trip(tickets, length):
             
             counter += 1
 
-    # comprehension to take the None off the end of the list
-    return [dest for dest in route if dest]
+    # take the None off the end of the list
+    return route[:-1]

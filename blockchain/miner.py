@@ -2,12 +2,17 @@ import hashlib
 import requests
 
 import sys
+import os
 
 from uuid import uuid4
 
 from timeit import default_timer as timer
 
 import random
+
+# global vars
+success = ''
+coins = 0
 
 
 def proof_of_work(last_proof):
@@ -23,10 +28,21 @@ def proof_of_work(last_proof):
     start = timer()
 
     print("Searching for next proof")
-    proof = 0
+    guesses = 0
+    proof = 300000
+    proceed = True
+    clear_counter = 0
+
     
-    while not valid_proof(last_proof, proof):
-        proof = random.random()
+    
+    while proceed:
+        if valid_proof(last_proof, proof):
+            break
+        else:
+            proof += 1
+
+    
+
     
     
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
@@ -47,7 +63,7 @@ def valid_proof(last_hash, proof):
     old_hash = hashlib.sha256(old_proof).hexdigest()
     new_hash = hashlib.sha256(new_proof).hexdigest()
 
-    return old_hash[:6] == new_hash[6:]
+    return old_hash[5:] == new_hash[:5]
     
 
 
@@ -82,6 +98,8 @@ if __name__ == '__main__':
         r = requests.post(url=node + "/mine", json=post_data)
         data = r.json()
         if data.get('message') == 'New Block Forged':
+            success = 'New Block Forged'
+            coins += 1
             coins_mined += 1
             print("Total coins mined: " + str(coins_mined))
         else:
