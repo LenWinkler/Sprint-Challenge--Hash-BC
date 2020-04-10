@@ -50,7 +50,7 @@ def valid_proof(last_hash, proof):
     old_hash = hashlib.sha256(old_proof).hexdigest()
     new_hash = hashlib.sha256(new_proof).hexdigest()
 
-    return old_hash[5:] == new_hash[:5]
+    return old_hash[-5:] == new_hash[:5]
     
 
 
